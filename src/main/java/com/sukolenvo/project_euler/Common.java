@@ -37,4 +37,14 @@ public class Common {
     }
     return result;
   }
+
+  static int divisorsSum(int number) {
+    int result = 1;
+    for (int i = 2; i <= Math.sqrt(number); i++) {
+      if (number % i == 0) {
+        result += number / i == i ? i : i + number / i;
+      }
+    }
+    return result;
+  }
 }
