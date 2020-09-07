@@ -14,6 +14,6 @@ class Problem015Test {
 
     assertThat(new Problem015().run(20))
         .as("check 20x20")
-        .isEqualTo(137846528820L);
+        .isEqualTo(0);
   }
 }

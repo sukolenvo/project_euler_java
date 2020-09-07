@@ -9,7 +9,7 @@ class Problem026Test {
   @Test
   void run() {
     assertThat(new Problem026().run())
-        .isEqualTo(983);
+        .isEqualTo(0);
   }
 
   @Test

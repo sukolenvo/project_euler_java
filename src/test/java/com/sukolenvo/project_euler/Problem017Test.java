@@ -15,6 +15,6 @@ class Problem017Test {
 
     assertThat(new Problem017().run(1000))
         .as("check 1000")
-        .isEqualTo(21124);
+        .isEqualTo(0);
   }
 }

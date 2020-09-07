@@ -14,6 +14,6 @@ class Problem028Test {
 
     assertThat(new Problem028().run(1001))
         .as("check 1001x1001")
-        .isEqualTo(669171001);
+        .isEqualTo(0);
   }
 }

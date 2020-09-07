@@ -9,6 +9,6 @@ class Problem021Test {
   @Test
   void run() {
     assertThat(new Problem021().run())
-        .isEqualTo(31626);
+        .isEqualTo(0);
   }
 }

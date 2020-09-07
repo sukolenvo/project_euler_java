@@ -10,6 +10,6 @@ class Problem012Test {
   void run() {
    assertThat(new Problem012().run())
        .as("check result")
-       .isEqualTo(76576500L);
+       .isEqualTo(0);
   }
 }

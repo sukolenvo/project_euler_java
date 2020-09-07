@@ -21,7 +21,7 @@ class Problem018Test {
     try (InputStream stream = getClass().getClassLoader().getResourceAsStream("problem018.txt")) {
       assertThat(new Problem018().run(IOUtils.toString(stream, StandardCharsets.UTF_8)))
           .as("run problem")
-          .isEqualTo(1074);
+          .isEqualTo(0);
     }
   }
 }

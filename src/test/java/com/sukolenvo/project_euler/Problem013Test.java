@@ -10,6 +10,6 @@ class Problem013Test {
   void run() throws Exception {
     assertThat(new Problem013().run())
         .as("check result")
-        .isEqualTo("5537376230");
+        .isEqualTo("0");
   }
 }
