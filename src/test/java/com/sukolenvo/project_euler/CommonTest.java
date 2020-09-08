@@ -48,4 +48,11 @@ class CommonTest {
         .as("check 2")
         .isEqualTo(List.of(2L, 2L, 7L));
   }
+
+  @Test
+  void lowestCommonTerm() {
+    assertThat(Common.getLowestCommonTerm(64, 98))
+        .as("check lowestCommonTerm for 64 and 98")
+        .isEqualTo(3136);
+  }
 }

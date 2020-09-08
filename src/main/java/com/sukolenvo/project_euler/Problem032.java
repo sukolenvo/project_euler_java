@@ -14,7 +14,7 @@ public class Problem032 {
       if (i % 10 == 1) {
         continue;
       }
-      Set<Integer> multiplicandDigits = getDigits(i);
+      Set<Integer> multiplicandDigits = Common.getDigits(i);
       if (multiplicandDigits.contains(0)) {
         continue;
       }
@@ -38,7 +38,7 @@ public class Problem032 {
         if (multiplicandDigitsCount + multiplierDigitsCount + productDigitsCount > 9) {
           break;
         }
-        Set<Integer> multiplierDigits = getDigits(j);
+        Set<Integer> multiplierDigits = Common.getDigits(j);
         if (multiplierDigits.size() != multiplierDigitsCount) {
           continue;
         }
@@ -48,7 +48,7 @@ public class Problem032 {
         if (multiplierDigits.stream().anyMatch(multiplicandDigits::contains)) {
           continue;
         }
-        Set<Integer> productDigits = getDigits(product);
+        Set<Integer> productDigits = Common.getDigits(product);
         if (productDigits.size() != productDigitsCount) {
           continue;
         }
@@ -87,14 +87,5 @@ public class Problem032 {
       return 6;
     }
     return (int) Math.ceil(Math.log10(i));
-  }
-
-  Set<Integer> getDigits(int i) {
-    Set<Integer> digits = new HashSet<>();
-    while (i > 0) {
-      digits.add(i % 10);
-      i /= 10;
-    }
-    return digits;
   }
 }

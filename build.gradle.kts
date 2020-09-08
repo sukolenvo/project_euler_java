@@ -1,6 +1,7 @@
 
 plugins {
     java
+    id("io.freefair.lombok") version "5.2.1"
 }
 
 group = "com.sukolenvo"
@@ -12,7 +13,6 @@ repositories {
 
 dependencies {
     implementation("commons-io:commons-io:2.7")
-
 
     testImplementation( "org.assertj:assertj-core:3.17.1")
     testImplementation("org.junit.jupiter", "junit-jupiter", "5.6.2")

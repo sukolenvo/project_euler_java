@@ -1,7 +1,11 @@
 package com.sukolenvo.project_euler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,5 +50,38 @@ public class Common {
       }
     }
     return result;
+  }
+
+  static Set<Integer> getDigits(int i) {
+    Set<Integer> digits = new HashSet<>();
+    while (i > 0) {
+      digits.add(i % 10);
+      i /= 10;
+    }
+    return digits;
+  }
+
+  static int getLowestCommonTerm(int first, int second) {
+    if (first == 1) {
+      return second;
+    }
+    if (second == 1) {
+      return first;
+    }
+    Map<Integer, Integer> common = new HashMap<>();
+    Map<Long, Long> firstPrimes = getPrimeFactors(first).stream()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    firstPrimes
+        .forEach((primeFactor, count) -> {
+          common.merge(primeFactor.intValue(), count.intValue(), Math::max);
+        });
+    getPrimeFactors(second).stream()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        .forEach((primeFactor, count) -> {
+          common.merge(primeFactor.intValue(), count.intValue(), Math::max);
+        });
+    return common.entrySet().stream()
+        .mapToInt(entry -> (int) Math.pow(entry.getKey(), entry.getValue()))
+        .reduce(1, (a, b) -> a * b);
   }
 }
