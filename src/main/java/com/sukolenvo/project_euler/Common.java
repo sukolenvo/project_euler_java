@@ -22,7 +22,7 @@ public class Common {
 
   static long getFactorial(int base) {
     int result = 1;
-    for (int i = 2; i < base; i++) {
+    for (int i = 2; i <= base; i++) {
       result *= i;
     }
     return result;
@@ -54,6 +54,15 @@ public class Common {
 
   static Set<Integer> getDigits(int i) {
     Set<Integer> digits = new HashSet<>();
+    while (i > 0) {
+      digits.add(i % 10);
+      i /= 10;
+    }
+    return digits;
+  }
+
+  static List<Integer> getDigitsList(int i) {
+    List<Integer> digits = new ArrayList<>();
     while (i > 0) {
       digits.add(i % 10);
       i /= 10;
