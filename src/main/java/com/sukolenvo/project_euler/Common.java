@@ -93,4 +93,38 @@ public class Common {
         .mapToInt(entry -> (int) Math.pow(entry.getKey(), entry.getValue()))
         .reduce(1, (a, b) -> a * b);
   }
+
+  static int getDigitCount(int i) {
+    if (i < 0) {
+      throw new IllegalStateException("Negative number " + i);
+    }
+    if (i < 10) {
+      return 1;
+    }
+    if (i < 100) {
+      return 2;
+    }
+    if (i < 1000) {
+      return 3;
+    }
+    if (i < 10000) {
+      return 4;
+    }
+    if (i < 100000) {
+      return 5;
+    }
+    if (i < 1_000_000) {
+      return 6;
+    }
+    if (i < 10_000_000) {
+      return 7;
+    }
+    if (i < 100_000_000) {
+      return 8;
+    }
+    if (i < 1_000_000_000) {
+      return 9;
+    }
+    return 10;
+  }
 }

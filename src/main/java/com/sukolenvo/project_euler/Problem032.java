@@ -18,7 +18,7 @@ public class Problem032 {
       if (multiplicandDigits.contains(0)) {
         continue;
       }
-      int multiplicandDigitsCount = getDigitCount(i);
+      int multiplicandDigitsCount = Common.getDigitCount(i);
       if (multiplicandDigits.size() != multiplicandDigitsCount) {
         continue;
       }
@@ -29,9 +29,9 @@ public class Problem032 {
         if (j % 10 == 1) {
           continue;
         }
-        int multiplierDigitsCount = getDigitCount(j);
+        int multiplierDigitsCount = Common.getDigitCount(j);
         int product = i * j;
-        int productDigitsCount = getDigitCount(product);
+        int productDigitsCount = Common.getDigitCount(product);
         if (multiplicandDigitsCount + multiplierDigitsCount + productDigitsCount < 9) {
           continue;
         }
@@ -65,27 +65,5 @@ public class Problem032 {
     return pandigitalNumbers.stream()
         .mapToLong(Integer::longValue)
         .sum();
-  }
-
-  int getDigitCount(int i) {
-    if (i < 10) {
-      return 1;
-    }
-    if (i < 100) {
-      return 2;
-    }
-    if (i < 1000) {
-      return 3;
-    }
-    if (i < 10000) {
-      return 4;
-    }
-    if (i < 100000) {
-      return 5;
-    }
-    if (i < 1000000) {
-      return 6;
-    }
-    return (int) Math.ceil(Math.log10(i));
   }
 }
