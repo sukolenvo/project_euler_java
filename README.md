@@ -1,6 +1,6 @@
 # Project Euler
 
-[![Profile](https://projecteuler.net/profile/sukolenvo.png?lvl=1)](https://projecteuler.net/profile/sukolenvo.png)
+[![Profile](https://projecteuler.net/profile/sukolenvo.png?lvl=2)](https://projecteuler.net/profile/sukolenvo.png)
 
 Study Java and practice with https://projecteuler.net/
 
