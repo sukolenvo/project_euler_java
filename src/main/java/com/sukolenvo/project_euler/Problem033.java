@@ -46,7 +46,7 @@ public class Problem033 {
     if (results.size() != 4) {
       throw new IllegalStateException("Expecting 4fractions but got " + results);
     }
-    return results.stream()
+    return (int) results.stream()
         .reduce(new Fraction(1, 1), Fraction::mul)
         .normalise()
         .getDenominator();

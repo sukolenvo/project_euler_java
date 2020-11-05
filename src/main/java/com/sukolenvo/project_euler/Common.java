@@ -35,6 +35,9 @@ public class Common {
         result.add(i);
         number /= i;
         i = 2;
+      } else if (i > Math.sqrt(number)) {
+        result.add(number);
+        number = 1;
       } else {
         i++;
       }

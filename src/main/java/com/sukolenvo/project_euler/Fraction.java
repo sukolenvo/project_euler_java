@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class Fraction {
 
-  private final int numerator;
-  private final int denominator;
+  private final long numerator;
+  private final long denominator;
 
   public Fraction normalise() {
     List<Long> numeratorFactors = Common.getPrimeFactors(numerator);
@@ -20,8 +20,8 @@ public class Fraction {
     if (matched.isEmpty()) {
       return this;
     }
-    int normalisedNumerator = numerator;
-    int normalisedDenominator = denominator;
+    long normalisedNumerator = numerator;
+    long normalisedDenominator = denominator;
     while (!matched.isEmpty()) {
       long divider = matched.remove(0);
       while (normalisedNumerator % divider == 0 && normalisedDenominator % divider == 0) {
@@ -34,5 +34,9 @@ public class Fraction {
 
   public Fraction mul(Fraction other) {
     return new Fraction(numerator * other.numerator, denominator * other.denominator);
+  }
+
+  public Fraction add(int number) {
+    return new Fraction(numerator + number * denominator, denominator);
   }
 }
