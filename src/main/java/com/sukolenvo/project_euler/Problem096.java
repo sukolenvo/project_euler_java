@@ -65,7 +65,25 @@ public class Problem096 {
             if (i == j) {
               continue;
             }
-            updated |= this.possibleValues.get(line * 9 - 9 +j).getDigits().remove(resolvedValue);
+            updated |= this.possibleValues.get(line * 9 - 9 + j).getDigits().remove(resolvedValue);
+          }
+        }
+      }
+      return updated;
+    }
+
+    public boolean normaliseColumn(int column) {
+      assert column > 0 && column < 10;
+      boolean updated = false;
+      for (int i = 0; i < 9; i++) {
+        PossibleValues possibleValues = this.possibleValues.get(i * 9 + column - 1);
+        if (possibleValues.isResolved()) {
+          int resolvedValue = possibleValues.getResolvedValue();
+          for (int j = 0; j < 9; j++) {
+            if (i == j) {
+              continue;
+            }
+            updated |= this.possibleValues.get(j * 9 + column - 1).getDigits().remove(resolvedValue);
           }
         }
       }
