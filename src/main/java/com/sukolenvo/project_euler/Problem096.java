@@ -117,6 +117,20 @@ public class Problem096 {
       }
       return builder.build();
     }
+
+    public boolean normalise() {
+      boolean changed = false;
+      for (int i = 1; i < 10; i++) {
+        changed |= normaliseLine(i);
+        changed |= normaliseColumn(i);
+        changed |= normaliseBlock(i);
+      }
+      return changed;
+    }
+
+    public boolean isCompleted() {
+      return possibleValues.stream().allMatch(PossibleValues::isResolved);
+    }
   }
 
   @Data
