@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 import lombok.Data;
 
 public class Problem096 {
@@ -56,7 +58,7 @@ public class Problem096 {
 
     public boolean normaliseLine(int line) {
       assert line > 0 && line < 10;
-      boolean updated = false;
+      boolean changed = false;
       for (int i = 0; i < 9; i++) {
         PossibleValues possibleValues = this.possibleValues.get(line * 9 - 9 + i);
         if (possibleValues.isResolved()) {
@@ -65,16 +67,16 @@ public class Problem096 {
             if (i == j) {
               continue;
             }
-            updated |= this.possibleValues.get(line * 9 - 9 + j).getDigits().remove(resolvedValue);
+            changed |= this.possibleValues.get(line * 9 - 9 + j).getDigits().remove(resolvedValue);
           }
         }
       }
-      return updated;
+      return changed;
     }
 
     public boolean normaliseColumn(int column) {
       assert column > 0 && column < 10;
-      boolean updated = false;
+      boolean changed = false;
       for (int i = 0; i < 9; i++) {
         PossibleValues possibleValues = this.possibleValues.get(i * 9 + column - 1);
         if (possibleValues.isResolved()) {
@@ -83,11 +85,37 @@ public class Problem096 {
             if (i == j) {
               continue;
             }
-            updated |= this.possibleValues.get(j * 9 + column - 1).getDigits().remove(resolvedValue);
+            changed |= this.possibleValues.get(j * 9 + column - 1).getDigits().remove(resolvedValue);
           }
         }
       }
-      return updated;
+      return changed;
+    }
+
+    public boolean normaliseBlock(int block) {
+      assert block > 0 && block < 10;
+      boolean changed = false;
+      for (PossibleValues possibleValues : getBlock(block).collect(Collectors.toList())) {
+        if (possibleValues.isResolved()) {
+          for (PossibleValues forUpdate : getBlock(block).collect(Collectors.toList())) {
+            if (!forUpdate.isResolved()) {
+              changed |= forUpdate.getDigits().remove(possibleValues.getResolvedValue());
+            }
+          }
+        }
+      }
+      return changed;
+    }
+
+    public Stream<PossibleValues> getBlock(int block) {
+      Builder<PossibleValues> builder = Stream.builder();
+      int zeroBasedBlockIndex = block - 1;
+      for (int i = zeroBasedBlockIndex * 3 % 9; i < zeroBasedBlockIndex * 3 % 9 + 3; i++) {
+        for (int j = zeroBasedBlockIndex / 3 * 3 ; j < zeroBasedBlockIndex / 3 * 3 + 3; j++) {
+          builder.accept(getPossibleValues(i + 1, j + 1));
+        }
+      }
+      return builder.build();
     }
   }
 

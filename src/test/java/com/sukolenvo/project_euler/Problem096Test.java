@@ -119,4 +119,45 @@ class Problem096Test {
         .as("no more changes to sudoku")
         .isFalse();
   }
+
+  @Test
+  void normaliseBlock() {
+    String input = "Test\n"
+        + "1 0 0 0 0 0 0 0 0\n"
+        + "0 2 0 0 0 0 0 0 0\n"
+        + "0 0 3 0 0 0 0 0 0\n"
+        + "0 0 0 4 0 0 0 0 0\n"
+        + "0 0 0 0 5 0 0 0 0\n"
+        + "0 0 0 0 0 6 0 0 0\n"
+        + "0 0 0 0 0 0 7 0 0\n"
+        + "0 0 0 0 0 0 0 8 0\n"
+        + "0 0 0 0 0 0 0 0 9\n";
+    Sudoku sudoku = new Problem096().parseSudoku(input).get(0);
+    int block = 5;
+
+    assertThat(sudoku.normaliseBlock(block))
+        .as("expecting normalise line to indicate sudoku changed")
+        .isTrue();
+
+    // check block #5
+    for (int i = 4; i <= 6; i++) {
+      for (int j = 4; j <= 6; j++) {
+        if (i == j) {
+          assertThat(sudoku.getPossibleValues(i, j))
+              .as("check resolved not changed for (%d:%d)", i, j)
+              .returns(true, PossibleValues::isResolved);
+        } else {
+          assertThat(sudoku.getPossibleValues(i, j).getDigits())
+              .as("check possible values normalised for (%d:%d)", i, j)
+              .hasSize(6)
+              .doesNotContain(4)
+              .doesNotContain(5)
+              .doesNotContain(6);
+        }
+      }
+    }
+    assertThat(sudoku.normaliseBlock(block))
+        .as("no more changes to sudoku")
+        .isFalse();
+  }
 }
