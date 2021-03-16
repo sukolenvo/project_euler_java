@@ -53,6 +53,24 @@ public class Problem096 {
       assert y > 0 && y < 10;
       return possibleValues.get(x * 9 + y - 10);
     }
+
+    public boolean normaliseLine(int line) {
+      assert line > 0 && line < 10;
+      boolean updated = false;
+      for (int i = 0; i < 9; i++) {
+        PossibleValues possibleValues = this.possibleValues.get(line * 9 - 9 + i);
+        if (possibleValues.isResolved()) {
+          int resolvedValue = possibleValues.getResolvedValue();
+          for (int j = 0; j < 9; j++) {
+            if (i == j) {
+              continue;
+            }
+            updated |= this.possibleValues.get(line * 9 - 9 +j).getDigits().remove(resolvedValue);
+          }
+        }
+      }
+      return updated;
+    }
   }
 
   @Data
@@ -62,6 +80,15 @@ public class Problem096 {
 
     static PossibleValues newAllPossible() {
       return new PossibleValues(IntStream.rangeClosed(1, 9).boxed().collect(Collectors.toSet()));
+    }
+
+    boolean isResolved() {
+      return digits.size() == 1;
+    }
+
+    int getResolvedValue() {
+      assert isResolved();
+      return digits.iterator().next();
     }
   }
 }

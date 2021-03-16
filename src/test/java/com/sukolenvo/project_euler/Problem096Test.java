@@ -1,7 +1,6 @@
 package com.sukolenvo.project_euler;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.sukolenvo.project_euler.Problem096.PossibleValues;
 import com.sukolenvo.project_euler.Problem096.Sudoku;
@@ -45,5 +44,42 @@ class Problem096Test {
         }
       }
     }
+  }
+
+  @Test
+  void normaliseLine() {
+    String input = "Test\n"
+        + "1 0 0 0 0 0 0 0 0\n"
+        + "0 2 0 0 0 0 0 0 0\n"
+        + "0 0 3 0 0 0 0 0 0\n"
+        + "0 0 0 4 0 0 0 0 0\n"
+        + "0 0 0 0 5 0 0 0 0\n"
+        + "0 0 0 0 0 6 0 0 0\n"
+        + "0 0 0 0 0 0 7 0 0\n"
+        + "0 0 0 0 0 0 0 8 0\n"
+        + "0 0 0 0 0 0 0 0 9\n";
+    Sudoku sudoku = new Problem096().parseSudoku(input).get(0);
+    int line = 3;
+    assertThat(sudoku.normaliseLine(line))
+        .as("expecting normalise line to retun true")
+        .isTrue();
+
+    for (int i = 1; i < 10; i++) {
+      PossibleValues possibleValues = sudoku.getPossibleValues(line, i);
+      if (i == line) {
+        assertThat(possibleValues)
+            .as("check resolved column unchanged")
+            .isEqualTo(new PossibleValues(Set.of(line)));
+      } else {
+        assertThat(possibleValues.getDigits())
+            .as("check possible values normalised for column %d", i)
+            .hasSize(8)
+            .doesNotContain(line);
+      }
+    }
+
+    assertThat(sudoku.normaliseLine(line))
+        .as("no more changes to sudoku")
+        .isFalse();
   }
 }
