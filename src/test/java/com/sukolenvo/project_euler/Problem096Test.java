@@ -65,7 +65,7 @@ class Problem096Test {
         .isTrue();
 
     for (int i = 1; i < 10; i++) {
-      PossibleValues possibleValues = sudoku.getPossibleValues(line, i);
+      PossibleValues possibleValues = sudoku.getPossibleValues(i, line);
       if (i == line) {
         assertThat(possibleValues)
             .as("check resolved column unchanged")
@@ -102,7 +102,7 @@ class Problem096Test {
         .isTrue();
 
     for (int i = 1; i < 10; i++) {
-      PossibleValues possibleValues = sudoku.getPossibleValues(i, column);
+      PossibleValues possibleValues = sudoku.getPossibleValues(column, i);
       if (i == column) {
         assertThat(possibleValues)
             .as("check resolved value unchanged")
@@ -159,5 +159,51 @@ class Problem096Test {
     assertThat(sudoku.normaliseBlock(block))
         .as("no more changes to sudoku")
         .isFalse();
+  }
+
+  @Test
+  void resolveOnlyPlaceInLine() {
+    String input = "Test\n"
+        + "0 0 0 0 0 0 0 1 0\n"
+        + "0 2 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 2 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 2\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 2 0 0 0 0\n"
+        + "0 0 0 0 0 0 2 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n";
+    Sudoku sudoku = new Problem096().parseSudoku(input).get(0);
+    sudoku.normalise();
+
+    assertThat(sudoku.resolveOnlyPlaceInLine(1))
+        .as("expecting to update sudoku")
+        .isTrue();
+
+    assertThat(sudoku.getPossibleValues(6, 1).getDigits())
+        .as("check cell resolved")
+        .isEqualTo(Set.of(2));
+  }
+
+  @Test
+  void normaliseColumn_last() {
+    String input = "Test\n"
+        + "0 0 0 0 0 0 0 1 0\n"
+        + "0 2 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 2 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 2\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 2 0 0 0 0\n"
+        + "0 0 0 0 0 0 2 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n";
+    Sudoku sudoku = new Problem096().parseSudoku(input).get(0);
+    assertThat(sudoku.normaliseColumn(9))
+        .as("check sudoku updated")
+        .isTrue();
+
+    assertThat(sudoku.getPossibleValues(9, 1).getDigits())
+        .as("expecting to update sudoku")
+        .doesNotContain(2);
   }
 }

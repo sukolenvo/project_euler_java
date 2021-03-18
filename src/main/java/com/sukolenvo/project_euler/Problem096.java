@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 public class Problem096 {
@@ -53,7 +54,7 @@ public class Problem096 {
     public PossibleValues getPossibleValues(int x, int y) {
       assert x > 0 && x < 10;
       assert y > 0 && y < 10;
-      return possibleValues.get(x * 9 + y - 10);
+      return possibleValues.get(y * 9 + x - 10);
     }
 
     public boolean normaliseLine(int line) {
@@ -78,14 +79,14 @@ public class Problem096 {
       assert column > 0 && column < 10;
       boolean changed = false;
       for (int i = 0; i < 9; i++) {
-        PossibleValues possibleValues = this.possibleValues.get(i * 9 + column - 1);
+        PossibleValues possibleValues = getPossibleValues(column, i + 1);
         if (possibleValues.isResolved()) {
           int resolvedValue = possibleValues.getResolvedValue();
           for (int j = 0; j < 9; j++) {
             if (i == j) {
               continue;
             }
-            changed |= this.possibleValues.get(j * 9 + column - 1).getDigits().remove(resolvedValue);
+            changed |= getPossibleValues(column, j + 1).getDigits().remove(resolvedValue);
           }
         }
       }
@@ -131,12 +132,40 @@ public class Problem096 {
     public boolean isCompleted() {
       return possibleValues.stream().allMatch(PossibleValues::isResolved);
     }
+
+    public boolean resolveOnlyPlaceInLine(int line) {
+      assert line > 0 && line < 10;
+      int[] positions = new int[10];
+      boolean changed = false;
+      for (int i = 1; i < 10; i++) {
+        PossibleValues possibleValues = getPossibleValues(i, line);
+        if (possibleValues.isResolved()) {
+          positions[possibleValues.getResolvedValue()] = -1;
+        } else {
+          for (int possibleValue : possibleValues.getDigits()) {
+            if (positions[possibleValue] == 0) {
+              positions[possibleValue] = i;
+            } else if (positions[possibleValue] > 0) {
+              positions[possibleValue] = -1;
+            }
+          }
+        }
+      }
+      for (int i = 1; i < positions.length; i++) {
+        if (positions[i] > 0) {
+          getPossibleValues(positions[i], line).setResolvedValue(i);
+          changed = true;
+        }
+      }
+      return changed;
+    }
   }
 
   @Data
+  @AllArgsConstructor
   static class PossibleValues {
 
-    private final Set<Integer> digits;
+    private Set<Integer> digits;
 
     static PossibleValues newAllPossible() {
       return new PossibleValues(IntStream.rangeClosed(1, 9).boxed().collect(Collectors.toSet()));
@@ -149,6 +178,11 @@ public class Problem096 {
     int getResolvedValue() {
       assert isResolved();
       return digits.iterator().next();
+    }
+
+    void setResolvedValue(int value) {
+      assert digits.contains(value);
+      digits = Set.of(value);
     }
   }
 }
