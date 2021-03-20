@@ -1,6 +1,7 @@
 package com.sukolenvo.project_euler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import com.sukolenvo.project_euler.Problem096.PossibleValues;
 import com.sukolenvo.project_euler.Problem096.Sudoku;
@@ -253,5 +254,25 @@ class Problem096Test {
     assertThat(sudoku.getPossibleValues(9, 1).getDigits())
         .as("expecting to update sudoku")
         .doesNotContain(2);
+  }
+
+  @Test
+  void solve01() {
+    String input = "Grid 01\n"
+        + "003020600\n"
+        + "900305001\n"
+        + "001806400\n"
+        + "008102900\n"
+        + "700000008\n"
+        + "006708200\n"
+        + "002609500\n"
+        + "800203009\n"
+        + "005010300";
+    Sudoku sudoku = new Problem096().parseSudoku(input).get(0);
+    assertThatNoException()
+        .as("check sudoku solved, but got %s", sudoku)
+        .isThrownBy(sudoku::solve);
+
+    System.out.println("Sudoku solved: " + sudoku);
   }
 }

@@ -2,6 +2,7 @@ package com.sukolenvo.project_euler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,9 +22,8 @@ public class Problem096 {
       String title = lines[i++];
       int[] values = new int[81];
       for (int j = 0; j < 9; j++) {
-        int[] line = Arrays.stream(lines[i++].split(" "))
-            .map(String::trim)
-            .mapToInt(Integer::parseInt)
+        int[] line = lines[i++].trim().replaceAll(" ", "").chars()
+            .map(c -> c - '0')
             .toArray();
         assert line.length == 9;
         System.arraycopy(line, 0, values, j * 9, 9);
@@ -46,7 +46,7 @@ public class Problem096 {
         if (value == 0) {
           return PossibleValues.newAllPossible();
         }
-        return new PossibleValues(Set.of(value));
+        return new PossibleValues(new HashSet<>(List.of(value)));
       })
           .collect(Collectors.toList());
     }
@@ -214,6 +214,33 @@ public class Problem096 {
       }
       return changed;
     }
+
+    void solve() {
+      while (!isCompleted()) {
+        boolean changed = normalise();
+        for (int i = 1; i < 10; i++) {
+          changed |= resolveOnlyPlaceInLine(i);
+          changed |= resolveOnlyPlaceInColumn(i);
+          changed |= resolveOnlyPlaceInBlock(i);
+        }
+        if (!changed) {
+          System.out.println("Failed to solve: " + this);
+          throw new IllegalStateException("Failed to solve sudoku");
+        }
+      }
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder builder = new StringBuilder(title);
+      for (int i = 0; i < possibleValues.size(); i++) {
+        if (i % 9 == 0) {
+          builder.append("\n");
+        }
+        builder.append(possibleValues.get(i).isResolved() ? possibleValues.get(i).getResolvedValue() : 0);
+      }
+      return builder.toString();
+    }
   }
 
   @Data
@@ -237,7 +264,7 @@ public class Problem096 {
 
     void setResolvedValue(int value) {
       assert digits.contains(value);
-      digits = Set.of(value);
+      digits = new HashSet<>(List.of(value));
     }
   }
 }
