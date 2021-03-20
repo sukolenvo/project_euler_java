@@ -186,6 +186,34 @@ public class Problem096 {
       }
       return changed;
     }
+
+    public boolean resolveOnlyPlaceInBlock(int block) {
+      assert block > 0 && block < 10;
+      int[] positions = new int[10];
+      boolean changed = false;
+      List<PossibleValues> blockPossibleValues = getBlock(block).collect(Collectors.toList());
+      for (int i = 1; i < 10; i++) {
+        PossibleValues possibleValues = blockPossibleValues.get(i - 1);
+        if (possibleValues.isResolved()) {
+          positions[possibleValues.getResolvedValue()] = -1;
+        } else {
+          for (int possibleValue : possibleValues.getDigits()) {
+            if (positions[possibleValue] == 0) {
+              positions[possibleValue] = i;
+            } else if (positions[possibleValue] > 0) {
+              positions[possibleValue] = -1;
+            }
+          }
+        }
+      }
+      for (int i = 1; i < positions.length; i++) {
+        if (positions[i] > 0) {
+          blockPossibleValues.get(positions[i] - 1).setResolvedValue(i);
+          changed = true;
+        }
+      }
+      return changed;
+    }
   }
 
   @Data

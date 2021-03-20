@@ -210,6 +210,30 @@ class Problem096Test {
   }
 
   @Test
+  void resolveOnlyPlaceInBlock() {
+    String input = "Test\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 2 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 2 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 2\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 2 0 0 0 0\n"
+        + "2 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 3 0\n";
+    Sudoku sudoku = new Problem096().parseSudoku(input).get(0);
+    sudoku.normalise();
+
+    assertThat(sudoku.resolveOnlyPlaceInBlock(9))
+        .as("expecting to update sudoku")
+        .isTrue();
+
+    assertThat(sudoku.getPossibleValues(7, 9).getDigits())
+        .as("check cell resolved")
+        .isEqualTo(Set.of(2));
+  }
+
+  @Test
   void normaliseColumn_last() {
     String input = "Test\n"
         + "0 0 0 0 0 0 0 1 0\n"
