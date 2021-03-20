@@ -159,6 +159,33 @@ public class Problem096 {
       }
       return changed;
     }
+
+    public boolean resolveOnlyPlaceInColumn(int column) {
+      assert column > 0 && column < 10;
+      int[] positions = new int[10];
+      boolean changed = false;
+      for (int i = 1; i < 10; i++) {
+        PossibleValues possibleValues = getPossibleValues(column, i);
+        if (possibleValues.isResolved()) {
+          positions[possibleValues.getResolvedValue()] = -1;
+        } else {
+          for (int possibleValue : possibleValues.getDigits()) {
+            if (positions[possibleValue] == 0) {
+              positions[possibleValue] = i;
+            } else if (positions[possibleValue] > 0) {
+              positions[possibleValue] = -1;
+            }
+          }
+        }
+      }
+      for (int i = 1; i < positions.length; i++) {
+        if (positions[i] > 0) {
+          getPossibleValues(column, positions[i]).setResolvedValue(i);
+          changed = true;
+        }
+      }
+      return changed;
+    }
   }
 
   @Data
