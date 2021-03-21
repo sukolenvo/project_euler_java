@@ -1,5 +1,8 @@
 package com.sukolenvo.project_euler;
 
+import java.awt.Point;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,9 +13,23 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import lombok.AllArgsConstructor;
+import lombok.Cleanup;
 import lombok.Data;
+import org.apache.commons.io.IOUtils;
 
 public class Problem096 {
+
+  int run() throws Exception {
+    @Cleanup InputStream stream = getClass().getClassLoader().getResourceAsStream("problem096.txt");
+    List<Sudoku> sudokus = parseSudoku(IOUtils.toString(stream, StandardCharsets.UTF_8));
+    assert sudokus.size() == 50;
+    sudokus.forEach(Sudoku::solve);
+    return sudokus.stream()
+        .mapToInt(sudoku -> sudoku.getPossibleValues(1, 1).getResolvedValue() * 100
+            + sudoku.getPossibleValues(1, 2).getResolvedValue() * 10
+            + sudoku.getPossibleValues(1, 3).getResolvedValue())
+        .sum();
+  }
 
   List<Sudoku> parseSudoku(String input) {
     String[] lines = input.split("\n");
@@ -109,11 +126,16 @@ public class Problem096 {
     }
 
     public Stream<PossibleValues> getBlock(int block) {
-      Builder<PossibleValues> builder = Stream.builder();
+      return getBlockIndices(block)
+          .map(coordinates -> getPossibleValues(coordinates.x, coordinates.y));
+    }
+
+    public Stream<Point> getBlockIndices(int block) {
+      Builder<Point> builder = Stream.builder();
       int zeroBasedBlockIndex = block - 1;
       for (int i = zeroBasedBlockIndex * 3 % 9; i < zeroBasedBlockIndex * 3 % 9 + 3; i++) {
         for (int j = zeroBasedBlockIndex / 3 * 3 ; j < zeroBasedBlockIndex / 3 * 3 + 3; j++) {
-          builder.accept(getPossibleValues(i + 1, j + 1));
+          builder.accept(new Point(i + 1, j + 1));
         }
       }
       return builder.build();
@@ -219,6 +241,7 @@ public class Problem096 {
       while (!isCompleted()) {
         boolean changed = normalise();
         for (int i = 1; i < 10; i++) {
+          changed |= onlyRowInBlock(i);
           changed |= resolveOnlyPlaceInLine(i);
           changed |= resolveOnlyPlaceInColumn(i);
           changed |= resolveOnlyPlaceInBlock(i);
@@ -228,6 +251,38 @@ public class Problem096 {
           throw new IllegalStateException("Failed to solve sudoku");
         }
       }
+    }
+
+    boolean onlyRowInBlock(int block) {
+      assert block > 0 && block < 10;
+      boolean changed = false;
+      int[] row = new int[10];
+      for (Point coordinates : getBlockIndices(block).collect(Collectors.toList())) {
+        PossibleValues possibleValues = getPossibleValues(coordinates.x, coordinates.y);
+        if (possibleValues.isResolved()) {
+          row[possibleValues.getResolvedValue()] = -1;
+        } else {
+          for (Integer digit : possibleValues.getDigits()) {
+            if (row[digit] == 0) {
+              row[digit] = coordinates.y;
+            } else if (row[digit] != coordinates.y) {
+              row[digit] = -1;
+            }
+          }
+        }
+      }
+      for (int i = 1; i < row.length; i++) {
+        if (row[i] > 0) {
+          int excludeFrom = getBlockIndices(block).mapToInt(point -> point.x).min().orElseThrow();
+          int excludeTo = getBlockIndices(block).mapToInt(point -> point.x).max().orElseThrow();
+          for (int j = 1; j < 10; j++) {
+            if (j < excludeFrom || j > excludeTo) {
+              changed |= getPossibleValues(j, row[i]).getDigits().remove(i);
+            }
+          }
+        }
+      }
+      return changed;
     }
 
     @Override

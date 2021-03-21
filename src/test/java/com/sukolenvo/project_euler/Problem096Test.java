@@ -275,4 +275,40 @@ class Problem096Test {
 
     System.out.println("Sudoku solved: " + sudoku);
   }
+
+  @Test
+  void onlyRowInBlock() {
+    String input = "Test\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 2 0 0 0 0 0 0 9\n"
+        + "0 0 0 0 0 0 3 7 1\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n";
+    Sudoku sudoku = new Problem096().parseSudoku(input).get(0);
+    sudoku.normalise();
+    assertThat(sudoku.onlyRowInBlock(3))
+        .as("check sudoku updated")
+        .isTrue();
+
+    assertThat(sudoku.getPossibleValues(4, 1).getDigits())
+        .as("expecting to update sudoku")
+        .doesNotContain(2);
+    assertThat(sudoku.getPossibleValues(5, 1).getDigits())
+        .as("expecting to update sudoku")
+        .doesNotContain(2);
+    assertThat(sudoku.getPossibleValues(6, 1).getDigits())
+        .as("expecting to update sudoku")
+        .doesNotContain(2);
+  }
+
+  @Test
+  void solve() throws Exception {
+    assertThat(new Problem096().run())
+        .as("check problem result")
+        .isEqualTo(-1);
+  }
 }
