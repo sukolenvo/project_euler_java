@@ -306,6 +306,31 @@ class Problem096Test {
   }
 
   @Test
+  void onlyColumnInBlock() {
+    String input = "Test\n"
+        + "0 0 0 0 0 0 0 5 0\n"
+        + "0 0 0 0 0 2 0 0 0\n"
+        + "0 0 0 0 0 0 0 4 0\n"
+        + "0 0 0 0 0 0 2 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n"
+        + "0 0 0 0 0 0 0 0 0\n";
+    Sudoku sudoku = new Problem096().parseSudoku(input).get(0);
+    sudoku.normalise();
+    assertThat(sudoku.onlyColumnInBlock(3))
+        .as("check sudoku updated")
+        .isTrue();
+
+    for (int i = 4; i < 10; i++) {
+      assertThat(sudoku.getPossibleValues(9, i).getDigits())
+          .as("expecting to update sudoku %d", i)
+          .doesNotContain(2);
+    }
+  }
+
+  @Test
   void solve() throws Exception {
     assertThat(new Problem096().run())
         .as("check problem result")

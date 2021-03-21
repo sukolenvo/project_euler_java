@@ -242,6 +242,7 @@ public class Problem096 {
         boolean changed = normalise();
         for (int i = 1; i < 10; i++) {
           changed |= onlyRowInBlock(i);
+          changed |= onlyColumnInBlock(i);
           changed |= resolveOnlyPlaceInLine(i);
           changed |= resolveOnlyPlaceInColumn(i);
           changed |= resolveOnlyPlaceInBlock(i);
@@ -278,6 +279,38 @@ public class Problem096 {
           for (int j = 1; j < 10; j++) {
             if (j < excludeFrom || j > excludeTo) {
               changed |= getPossibleValues(j, row[i]).getDigits().remove(i);
+            }
+          }
+        }
+      }
+      return changed;
+    }
+
+    boolean onlyColumnInBlock(int block) {
+      assert block > 0 && block < 10;
+      boolean changed = false;
+      int[] column = new int[10];
+      for (Point coordinates : getBlockIndices(block).collect(Collectors.toList())) {
+        PossibleValues possibleValues = getPossibleValues(coordinates.x, coordinates.y);
+        if (possibleValues.isResolved()) {
+          column[possibleValues.getResolvedValue()] = -1;
+        } else {
+          for (Integer digit : possibleValues.getDigits()) {
+            if (column[digit] == 0) {
+              column[digit] = coordinates.x;
+            } else if (column[digit] != coordinates.x) {
+              column[digit] = -1;
+            }
+          }
+        }
+      }
+      for (int i = 1; i < column.length; i++) {
+        if (column[i] > 0) {
+          int excludeFrom = getBlockIndices(block).mapToInt(point -> point.y).min().orElseThrow();
+          int excludeTo = getBlockIndices(block).mapToInt(point -> point.y).max().orElseThrow();
+          for (int j = 1; j < 10; j++) {
+            if (j < excludeFrom || j > excludeTo) {
+              changed |= getPossibleValues(column[i], j).getDigits().remove(i);
             }
           }
         }
