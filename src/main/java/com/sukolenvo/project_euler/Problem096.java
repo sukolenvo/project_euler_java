@@ -26,8 +26,8 @@ public class Problem096 {
     sudokus.forEach(Sudoku::solve);
     return sudokus.stream()
         .mapToInt(sudoku -> sudoku.getPossibleValues(1, 1).getResolvedValue() * 100
-            + sudoku.getPossibleValues(1, 2).getResolvedValue() * 10
-            + sudoku.getPossibleValues(1, 3).getResolvedValue())
+            + sudoku.getPossibleValues(2, 1).getResolvedValue() * 10
+            + sudoku.getPossibleValues(3, 1).getResolvedValue())
         .sum();
   }
 
@@ -54,7 +54,7 @@ public class Problem096 {
   static class Sudoku {
 
     private final String title;
-    private final List<PossibleValues> possibleValues;
+    private List<PossibleValues> possibleValues;
 
     Sudoku(String title, int[] values) {
       assert values.length == 81;
@@ -65,6 +65,13 @@ public class Problem096 {
         }
         return new PossibleValues(new HashSet<>(List.of(value)));
       })
+          .collect(Collectors.toList());
+    }
+
+    Sudoku(Sudoku from) {
+      this.title = from.getTitle();
+      this.possibleValues = from.getPossibleValues().stream()
+          .map(PossibleValues::new)
           .collect(Collectors.toList());
     }
 
@@ -155,6 +162,35 @@ public class Problem096 {
       return possibleValues.stream().allMatch(PossibleValues::isResolved);
     }
 
+    public void checkValid() {
+      if (possibleValues.stream().anyMatch(possibleValues -> possibleValues.getDigits().isEmpty())) {
+        throw new InvalidSudokuException("no possible values for sell");
+      }
+      for (int i = 1; i < 10; i++) {
+        int index = i;
+        List<PossibleValues> resolvedValues = getBlock(i)
+            .filter(PossibleValues::isResolved)
+            .collect(Collectors.toList());
+        if (Set.copyOf(resolvedValues).size() < resolvedValues.size()) {
+          throw new InvalidSudokuException("duplicates found in column" + index);
+        }
+        resolvedValues = IntStream.rangeClosed(1, 9)
+            .mapToObj(j -> getPossibleValues(index, j))
+            .filter(PossibleValues::isResolved)
+            .collect(Collectors.toList());
+        if (Set.copyOf(resolvedValues).size() < resolvedValues.size()) {
+          throw new InvalidSudokuException("duplicates found in column" + index);
+        }
+        resolvedValues = IntStream.rangeClosed(1, 9)
+            .mapToObj(j -> getPossibleValues(j, index))
+            .filter(PossibleValues::isResolved)
+            .collect(Collectors.toList());
+        if (Set.copyOf(resolvedValues).size() < resolvedValues.size()) {
+          throw new InvalidSudokuException("duplicates found in column" + index);
+        }
+      }
+    }
+
     public boolean resolveOnlyPlaceInLine(int line) {
       assert line > 0 && line < 10;
       int[] positions = new int[10];
@@ -239,6 +275,7 @@ public class Problem096 {
 
     void solve() {
       while (!isCompleted()) {
+        checkValid();
         boolean changed = normalise();
         for (int i = 1; i < 10; i++) {
           changed |= onlyRowInBlock(i);
@@ -248,9 +285,26 @@ public class Problem096 {
           changed |= resolveOnlyPlaceInBlock(i);
         }
         if (!changed) {
-          System.out.println("Failed to solve: " + this);
-          throw new IllegalStateException("Failed to solve sudoku");
+          guessAndTest();
         }
+      }
+    }
+
+    void guessAndTest() {
+      Sudoku branch = new Sudoku(this);
+      int i = 0;
+      for (; i < branch.getPossibleValues().size(); i++) {
+        if (!branch.getPossibleValues().get(i).isResolved()) {
+          break;
+        }
+      }
+      int testResolvedValue = branch.getPossibleValues().get(i).getDigits().stream().findAny().orElseThrow();
+      branch.getPossibleValues().get(i).setResolvedValue(testResolvedValue);
+      try {
+        branch.solve();
+        possibleValues = branch.getPossibleValues();
+      } catch (InvalidSudokuException e) {
+        possibleValues.get(i).getDigits().remove(testResolvedValue);
       }
     }
 
@@ -337,6 +391,10 @@ public class Problem096 {
 
     private Set<Integer> digits;
 
+    PossibleValues(PossibleValues from) {
+      this(new HashSet<>(from.digits));
+    }
+
     static PossibleValues newAllPossible() {
       return new PossibleValues(IntStream.rangeClosed(1, 9).boxed().collect(Collectors.toSet()));
     }
@@ -353,6 +411,13 @@ public class Problem096 {
     void setResolvedValue(int value) {
       assert digits.contains(value);
       digits = new HashSet<>(List.of(value));
+    }
+  }
+
+  static class InvalidSudokuException extends RuntimeException {
+
+    InvalidSudokuException(String message) {
+      super(message);
     }
   }
 }
