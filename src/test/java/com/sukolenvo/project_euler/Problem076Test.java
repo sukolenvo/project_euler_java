@@ -5,11 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class Problem031Test {
+class Problem076Test {
 
   @Test
   void run() {
-    assertThat(new Problem031().run())
-        .isEqualTo(0);
+    assertThat(new Problem076().run())
+        .as("check result")
+        .isEqualTo(-1);
   }
 }
