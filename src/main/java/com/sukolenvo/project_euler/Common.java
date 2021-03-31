@@ -1,5 +1,6 @@
 package com.sukolenvo.project_euler;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,24 @@ public class Common {
       } else if (i > Math.sqrt(number)) {
         result.add(number);
         number = 1;
+      } else {
+        i++;
+      }
+    }
+    return result;
+  }
+
+  static List<Long> getPrimeFactors(BigInteger number) {
+    List<Long> result = new ArrayList<>();
+    for (long i = 2; number.compareTo(BigInteger.ONE) > 1;) {
+      if (number.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) < 0) {
+        result.addAll(getPrimeFactors(number.longValue()));
+        return result;
+      }
+      if (number.mod(BigInteger.valueOf(i)).equals(BigInteger.ZERO)) {
+        result.add(i);
+        number = number.divide(BigInteger.valueOf(i));
+        i = 2;
       } else {
         i++;
       }
