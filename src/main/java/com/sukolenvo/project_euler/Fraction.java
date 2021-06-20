@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import lombok.Data;
 
 @Data
-public class Fraction {
+public class Fraction implements Comparable<Fraction> {
 
   private final long numerator;
   private final long denominator;
@@ -38,5 +38,10 @@ public class Fraction {
 
   public Fraction add(int number) {
     return new Fraction(numerator + number * denominator, denominator);
+  }
+
+  @Override
+  public int compareTo(Fraction o) {
+    return Long.compare(numerator * o.denominator, o.numerator * denominator);
   }
 }
