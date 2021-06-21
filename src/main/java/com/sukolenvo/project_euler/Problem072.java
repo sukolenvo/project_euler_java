@@ -15,7 +15,7 @@ public class Problem072 {
     return result;
   }
 
-  int getPhi(int number) {
+  public static int getPhi(int number) {
     List<Long> primeFactors = Common.getPrimeFactors(number);
     if (primeFactors.size() == 1) {
       return number - 1;
