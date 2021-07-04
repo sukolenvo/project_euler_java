@@ -183,4 +183,13 @@ public class Common {
     }
     return (int) (Math.log10(i) + 1);
   }
+
+  public static boolean isPalindrom(List<Integer> digits) {
+    for (int j = 0; j < digits.size() / 2; j++) {
+      if (!digits.get(j).equals(digits.get(digits.size() - j - 1))) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

@@ -8,21 +8,12 @@ public class Problem036 {
     long result = 0;
     for (int i = 1; i < 1_000_000; i += 2) {
       List<Integer> digitsList = Common.getDigitsList(i);
-      if (isPalindrom(digitsList)
+      if (Common.isPalindrom(digitsList)
         && isPalindrom(Integer.toBinaryString(i).toCharArray())) {
         result += i;
       }
     }
     return result;
-  }
-
-  private boolean isPalindrom(List<Integer> digits) {
-    for (int j = 0; j < digits.size() / 2; j++) {
-      if (!digits.get(j).equals(digits.get(digits.size() - j - 1))) {
-        return false;
-      }
-    }
-    return true;
   }
 
   private boolean isPalindrom(char[] digits) {
