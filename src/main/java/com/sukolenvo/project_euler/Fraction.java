@@ -40,6 +40,15 @@ public class Fraction implements Comparable<Fraction> {
     return new Fraction(numerator + number * denominator, denominator);
   }
 
+  public Fraction add(Fraction other) {
+    if (denominator == other.denominator) {
+      return new Fraction(numerator + other.numerator, denominator);
+    }
+    long numerator = this.numerator * other.denominator + other.numerator * denominator;
+    long denominator = this.denominator * other.denominator;
+    return new Fraction(numerator, denominator);
+  }
+
   @Override
   public int compareTo(Fraction o) {
     return Long.compare(numerator * o.denominator, o.numerator * denominator);
